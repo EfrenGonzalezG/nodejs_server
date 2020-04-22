@@ -3,8 +3,19 @@ var bodyParser = require('body-parser');
 var app = express();
 var mongo = require('mongodb');
 var sanitize = require('mongo-sanitize');
+const https = require('https');
+const fs = require('fs');
 
 var urlencodedParser = bodyParser.urlencoded({extended: false});
+
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/alumnos04.enlacenet.net/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/alumnos04.enlacenet.net/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/alumnos04.enlacenet.net/chain.pem', 'utf8');
+const credentials = {
+  key: privateKey,
+  cert: certificate,
+  ca: ca
+};
 
 app.set('view engine', 'ejs');
 app.use('/assets', express.static('stuff'));
@@ -98,4 +109,4 @@ app.post('/save/', urlencodedParser, function(req, res){
   }
 });
 
-app.listen(80);
+app.listen(443);
